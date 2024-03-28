@@ -17,11 +17,11 @@ object TokenManager: KoinComponent {
         .withIssuer(config.jwtIssuer)
         .build()
 
-    fun generateToken(id: String): String {
+    fun generateToken(email: String): String {
         return JWT.create()
             .withAudience(config.jwtAudience)
             .withIssuer(config.jwtIssuer)
-            .withClaim("id", id)
+            .withClaim("email", email)
             .sign(Algorithm.HMAC256(config.jwtSecret))
     }
 

@@ -7,7 +7,6 @@ import com.example.data.database.DatabaseProvider
 import com.example.di.ApiModule
 import com.example.di.TableModule
 import com.example.utils.config.generateConfig
-import com.example.utils.manager.PasswordManager
 import com.typesafe.config.ConfigFactory
 import io.ktor.server.application.*
 import io.ktor.server.config.*
@@ -32,7 +31,6 @@ fun main() {
                 modules(
                     org.koin.dsl.module {
                         single { config }
-                        single { PasswordManager }
                     },
                     TableModule.provide,
                     ApiModule.provide,
