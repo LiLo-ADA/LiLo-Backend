@@ -1,6 +1,5 @@
 package com.example.model.response.locker
 
-import com.example.model.response.user.User
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,5 +9,5 @@ data class Locker(
     val number: Int,
     val status: Int,
     val reportCount: Int,
-    val user: User
+    val password: String?
 )
