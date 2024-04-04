@@ -8,6 +8,6 @@ data class Locker(
     val area: String,
     val number: Int,
     val status: Int,
-    val reportCount: Int,
+    val reported: Boolean,
     val password: String?
 )

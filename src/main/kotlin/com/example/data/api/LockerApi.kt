@@ -41,6 +41,7 @@ object LockerApi: KoinComponent {
                     .map {
                         it.toLocker()
                     }
+                    .sortedBy { it.number }
             }.let {
                 call.respond(
                     HttpStatusCode.OK,
@@ -198,51 +199,25 @@ object LockerApi: KoinComponent {
                 status = HttpStatusCode.InternalServerError
             )
 
-            // save locker
             dbQuery {
-                lockerTable.select {
-                    lockerTable.id eq UUID.fromString(request.id)
-                }.singleOrNull()
-                    ?.toLocker()
-            }.let { locker ->
-                if (locker == null) {
-                    call.respond(
-                        HttpStatusCode.BadRequest,
-                        BaseResponse(
-                            meta = MetaResponse(
-                                success = false,
-                                message = "Locker not found"
-                            ),
-                            data = null
-                        )
+                lockerTable
+                    .update(
+                        { lockerTable.id eq UUID.fromString(request.id) }
+                    ) {
+                        it[reported] = true
+                        it[status] = 2
+                    }
+            }.let {
+                call.respond(
+                    HttpStatusCode.OK,
+                    BaseResponse(
+                        meta = MetaResponse(
+                            success = true,
+                            message = "Report Success"
+                        ),
+                        data = null
                     )
-
-                    return@post
-                }
-
-                dbQuery {
-                    lockerTable
-                        .update(
-                            { lockerTable.id eq UUID.fromString(request.id) }
-                        ) {
-                            it[reportCount] = locker.reportCount + 1
-
-                            if (locker.reportCount + 1 == 3) {
-                                it[status] = 2
-                            }
-                        }
-                }.let {
-                    call.respond(
-                        HttpStatusCode.OK,
-                        BaseResponse(
-                            meta = MetaResponse(
-                                success = true,
-                                message = "Report Success"
-                            ),
-                            data = null
-                        )
-                    )
-                }
+                )
             }
         }
     }
@@ -255,51 +230,25 @@ object LockerApi: KoinComponent {
                 status = HttpStatusCode.InternalServerError
             )
 
-            // save locker
             dbQuery {
-                lockerTable.select {
-                    lockerTable.id eq UUID.fromString(request.id)
-                }.singleOrNull()
-                    ?.toLocker()
-            }.let { locker ->
-                if (locker == null) {
-                    call.respond(
-                        HttpStatusCode.BadRequest,
-                        BaseResponse(
-                            meta = MetaResponse(
-                                success = false,
-                                message = "Locker not found"
-                            ),
-                            data = null
-                        )
+                lockerTable
+                    .update(
+                        { lockerTable.id eq UUID.fromString(request.id) }
+                    ) {
+                        it[reported] = false
+                        it[status] = 1
+                    }
+            }.let {
+                call.respond(
+                    HttpStatusCode.OK,
+                    BaseResponse(
+                        meta = MetaResponse(
+                            success = true,
+                            message = "Report Success"
+                        ),
+                        data = null
                     )
-
-                    return@post
-                }
-
-                dbQuery {
-                    lockerTable
-                        .update(
-                            { lockerTable.id eq UUID.fromString(request.id) }
-                        ) {
-                            it[reportCount] = locker.reportCount - 1
-
-                            if (locker.reportCount - 1 == -3) {
-                                it[status] = 1
-                            }
-                        }
-                }.let {
-                    call.respond(
-                        HttpStatusCode.OK,
-                        BaseResponse(
-                            meta = MetaResponse(
-                                success = true,
-                                message = "Report Success"
-                            ),
-                            data = null
-                        )
-                    )
-                }
+                )
             }
         }
     }

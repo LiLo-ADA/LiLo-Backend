@@ -9,7 +9,7 @@ object LockerTable: Table("locker") {
     val area = varchar("area", length = 20)
     val number = integer("number")
     val status = integer("status")
-    val reportCount = integer("reportCount")
+    val reported = bool("reported")
     val password = varchar("password", length = 128).nullable()
     val email = varchar("email", length = 64).references(UserTable.email).nullable()
 
@@ -21,7 +21,7 @@ object LockerTable: Table("locker") {
             area = this[area],
             number = this[number],
             status = this[status],
-            reportCount = this[reportCount],
+            reported = this[reported],
             password = this[password]
         )
     }
